@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/adiceFragment"
+    >
+
+    <fragment
+        android:id="@+id/adiceFragment"
+        android:name="jp.gr.aqua.adice.fragment.AdiceFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_adice"
+        >
+        <action
+            android:id="@+id/action_main_to_about"
+            app:destination="@id/aboutFragment" />
+        <action
+            android:id="@+id/action_main_to_preference_general"
+            app:destination="@id/preferencesGeneralFragment" />
+        <action
+            android:id="@+id/action_main_to_welcome_dialog"
+            app:destination="@id/welcomeDialogFragment" />
+        <action
+            android:id="@+id/action_main_to_resultclick_dialog"
+            app:destination="@id/resultClickDialogFragment" />
+        <action
+            android:id="@+id/action_main_to_longclick_dialog"
+            app:destination="@id/resultLongClickDialogFragment" />
+
+        <argument
+            android:name="text"
+            app:argType="string"
+            />
+
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="jp.gr.aqua.adice.fragment.AboutFragment"
+        android:label="@string/about_name"
+        />
+    <fragment
+        android:id="@+id/installFragment"
+        android:name="jp.gr.aqua.adice.fragment.InstallFragment"
+        android:label="@string/install_title"
+        />
+    <fragment
+        android:id="@+id/preferencesGeneralFragment"
+        android:name="jp.gr.aqua.adice.fragment.PreferencesGeneralFragment"
+        android:label="@string/setting_name"
+        >
+        <action
+            android:id="@+id/action_preference_general_to_preference_dictionary"
+            app:destination="@id/preferencesDictionaryFragment" />
+        <action
+            android:id="@+id/action_preference_general_to_install"
+            app:destination="@id/installFragment" />
+
+        <argument
+            android:name="downloadnow"
+            app:argType="boolean"/>
+
+    </fragment>
+    <fragment
+        android:id="@+id/preferencesDictionaryFragment"
+        android:name="jp.gr.aqua.adice.fragment.PreferencesDictionaryFragment"
+        android:label="@string/menudicset"
+        >
+
+        <argument
+            android:name="filename"
+            app:argType="string"/>
+
+        <argument
+            android:name="index"
+            app:argType="integer"/>
+
+    </fragment>
+
+    <dialog
+        android:id="@+id/welcomeDialogFragment"
+        android:name="jp.gr.aqua.adice.fragment.WelcomeDialogFragment"
+        android:label="@string/app_name"
+        >
+
+        <action
+            android:id="@+id/action_welcome_dialog_to_preference_general"
+            app:destination="@id/preferencesGeneralFragment" />
+
+    </dialog>
+
+    <dialog
+        android:id="@+id/resultClickDialogFragment"
+        android:name="jp.gr.aqua.adice.fragment.ResultClickDialogFragment"
+        android:label="@string/app_name"
+        >
+
+        <argument
+            android:name="title"
+            app:argType="string"/>
+
+        <argument
+            android:name="disps"
+            app:argType="string[]"/>
+
+        <argument
+            android:name="items"
+            app:argType="string[]"/>
+
+    </dialog>
+    <dialog
+        android:id="@+id/resultLongClickDialogFragment"
+        android:name="jp.gr.aqua.adice.fragment.ResultLongClickDialogFragment"
+        android:label="@string/app_name"
+        >
+
+        <argument
+            android:name="title"
+            app:argType="string"/>
+
+        <argument
+            android:name="all"
+            app:argType="string"/>
+
+    </dialog>
+
+</navigation>

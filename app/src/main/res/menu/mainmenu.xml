@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/preferences"
+        android:alphabeticShortcut="S"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/settings"/>
+
+    <item
+        android:id="@+id/help"
+        android:alphabeticShortcut="H"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/help"/>
+</menu>

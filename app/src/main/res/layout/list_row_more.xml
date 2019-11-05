@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="result"
+            type="jp.gr.aqua.adice.model.ResultModel" />
+
+        <variable
+            name="viewModel"
+            type="jp.gr.aqua.adice.view.ResultView.ResultViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:onClick="@{(view) -> viewModel.onClick(view)}"
+        >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/morebtn"
+            android:textSize="16dp"
+            android:textColor="@android:color/black"
+            android:background="@drawable/shape_round_rect"
+            android:gravity="center"
+            android:padding="8dp"
+            android:layout_margin="4dp"
+            />
+
+    </LinearLayout>
+</layout>

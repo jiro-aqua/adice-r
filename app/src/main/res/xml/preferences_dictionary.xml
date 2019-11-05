@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <PreferenceCategory
+        android:key="category"
+        android:title="@string/dictionarymanagementtitle"
+        app:iconSpaceReserved="false"
+        >
+        <Preference
+            android:key="|filename"
+            android:title="@string/dictionarypathtitle"
+            app:iconSpaceReserved="false"
+            />
+
+        <EditTextPreference
+            android:key="|dicname"
+            android:title="@string/dictionarynametitle"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true"
+            />
+
+        <ListPreference
+            android:key="|resultnum"
+            android:title="@string/numberofresulttitle"
+            android:entries="@array/result_labels"
+            android:entryValues="@array/result_values"
+            android:dialogTitle="@string/numberofresulttitle"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true"
+            />
+
+        <SwitchPreferenceCompat
+            android:key="|english"
+            android:title="@string/englishtitle"
+            android:summaryOn="@string/englishsummaryon"
+            android:summaryOff="@string/englishsummaryoff"
+            app:iconSpaceReserved="false"
+            />
+
+        <SwitchPreferenceCompat
+            android:key="|use"
+            android:title="@string/enabledictionarytitle"
+            android:summaryOn="@string/enabledictionarysummaryon"
+            android:summaryOff="@string/enabledictionarysummaryoff"
+            app:iconSpaceReserved="false"
+            />
+
+        <Preference
+            android:key="|MoveUp"
+            android:title="@string/moveuptitle"
+            app:iconSpaceReserved="false"
+            />
+
+        <Preference
+            android:key="|MoveDown"
+            android:title="@string/movedowntitle"
+            app:iconSpaceReserved="false"
+            />
+
+        <Preference
+            android:key="|Remove"
+            android:title="@string/removedictionarytitle"
+            app:iconSpaceReserved="false"
+            />
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

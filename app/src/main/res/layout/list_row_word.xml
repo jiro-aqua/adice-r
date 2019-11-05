@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="result"
+            type="jp.gr.aqua.adice.model.ResultModel" />
+
+        <variable
+            name="viewModel"
+            type="jp.gr.aqua.adice.view.ResultView.ResultViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:onClick="@{(view)->viewModel.onClick(view)}"
+        app:onLongClickListener="@{(view)->viewModel.onLongClick(view)}"
+        >
+
+        <TextView
+            android:id="@+id/ListIndex"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="@android:color/black"
+            app:indexResult="@{result}"
+            />
+
+        <TextView
+            android:id="@+id/ListPhone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="@android:color/black"
+            app:phoneResult="@{result}"
+            />
+
+        <TextView
+            android:id="@+id/ListTrans"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="@android:color/black"
+            app:transResult="@{result}"
+            />
+
+        <TextView
+            android:id="@+id/ListSample"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="@android:color/black"
+            app:sampleResult="@{result}"
+            />
+
+        <View
+            android:id="@+id/bottomPadding"
+            android:layout_width="fill_parent"
+            android:layout_height="16dp"
+            />
+
+    </LinearLayout>
+</layout>

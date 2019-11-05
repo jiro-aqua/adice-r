@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="jp.gr.aqua.adice.viewmodel.AdiceViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <jp.gr.aqua.adice.view.DicEditText
+            android:id="@+id/editSearchWord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:imeOptions="actionSearch|flagNoExtractUi"
+            android:inputType="text"
+            android:paddingTop="8dip"
+            android:paddingRight="40dip"
+            android:singleLine="true"
+            />
+
+        <ImageButton
+            android:id="@+id/buttonClear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/editSearchWord"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:padding="8dip"
+            android:src="@drawable/clr" />
+
+        <jp.gr.aqua.adice.view.ResultView
+            android:id="@+id/dicView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@+id/editSearchWord"
+            android:layout_alignParentBottom="true" />
+
+    </RelativeLayout>
+
+</layout>
