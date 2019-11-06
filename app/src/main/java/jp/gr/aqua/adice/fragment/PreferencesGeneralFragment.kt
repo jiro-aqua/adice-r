@@ -45,14 +45,15 @@ class PreferencesGeneralFragment : PreferenceFragmentCompat() {
             true
         }
 
+        if ( args.downloadnow ) {
+            startDownload()
+        }
+
         showDownloadProgress(false)
     }
 
     override fun onStart() {
         super.onStart()
-        if ( args.downloadnow ) {
-            startDownload()
-        }
         aboutViewModel.downloadResult.observe(this, Observer {
             url->
             url?.let{

@@ -62,11 +62,11 @@ class ResultView : RecyclerView {
             private val LayoutResource = SparseIntArray()
 
             init {
-                LayoutResource[ResultModel.WORD] = R.layout.list_row_word
-                LayoutResource[ResultModel.NONE] = R.layout.list_row_none
-                LayoutResource[ResultModel.NORESULT] = R.layout.list_row_noresult
-                LayoutResource[ResultModel.MORE] = R.layout.list_row_more
-                LayoutResource[ResultModel.FOOTER] = R.layout.list_row_footer
+                LayoutResource[ResultModel.Mode.WORD.mode] = R.layout.list_row_word
+                LayoutResource[ResultModel.Mode.NONE.mode] = R.layout.list_row_none
+                LayoutResource[ResultModel.Mode.NORESULT.mode] = R.layout.list_row_noresult
+                LayoutResource[ResultModel.Mode.MORE.mode] = R.layout.list_row_more
+                LayoutResource[ResultModel.Mode.FOOTER.mode] = R.layout.list_row_footer
             }
         }
 
@@ -82,6 +82,6 @@ class ResultView : RecyclerView {
         }
 
         override fun getItemCount(): Int = objects.size
-        override fun getItemViewType(position: Int): Int = objects[position].mode
+        override fun getItemViewType(position: Int): Int = objects[position].mode.mode
     }
 }

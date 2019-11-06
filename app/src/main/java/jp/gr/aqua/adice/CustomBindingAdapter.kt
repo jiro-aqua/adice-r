@@ -24,25 +24,25 @@ object CustomBindingAdapter {
     @BindingAdapter("indexResult")
     @JvmStatic
     fun indexResult(view: TextView, result: ResultModel) {
-        view.setItem(result.Index, result.IndexFont, result.IndexSize)
+        view.setItem(result.index, result.indexFont, result.indexSize)
     }
 
     @BindingAdapter("phoneResult")
     @JvmStatic
     fun phoneResult(view: TextView, result: ResultModel) {
-        view.setItem(result.Phone, result.PhoneFont, result.PhoneSize)
+        view.setItem(result.phone, result.phoneFont, result.phoneSize)
     }
 
     @BindingAdapter("transResult")
     @JvmStatic
     fun transResult(view: TextView, result: ResultModel) {
-        view.setItem(result.Trans, result.TransFont, result.TransSize)
+        view.setItem(result.trans, result.transFont, result.transSize)
     }
 
     @BindingAdapter("sampleResult")
     @JvmStatic
     fun sampleResult(view: TextView, result: ResultModel) {
-        view.setItem(result.Sample, result.SampleFont, result.SampleSize)
+        view.setItem(result.sample, result.sampleFont, result.sampleSize)
     }
 
 }

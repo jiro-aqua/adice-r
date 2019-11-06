@@ -5,29 +5,32 @@ import java.lang.StringBuilder
 import java.util.ArrayList
 import java.util.regex.Pattern
 
-class ResultModel(val mode: Int, val dic: Int) {       //todo data class
-    var Index: CharSequence? = null
-    var Phone: CharSequence? = null
-    var Trans: CharSequence? = null
-    var Sample: CharSequence? = null
+data class ResultModel(
+        val mode: Mode,
+        val dic: Int,
+        val index: CharSequence? = null,
+        val phone: CharSequence? = null,
+        val trans: CharSequence? = null,
+        val sample: CharSequence? = null,
 
-    var IndexFont: Typeface? = null
-    var PhoneFont: Typeface? = null
-    var TransFont: Typeface? = null
-    var SampleFont: Typeface? = null
-    var IndexSize: Int = 0
-    var PhoneSize: Int = 0
-    var TransSize: Int = 0
-    var SampleSize: Int = 0
+        val indexFont: Typeface? = null,
+        val phoneFont: Typeface? = null,
+        val transFont: Typeface? = null,
+        val sampleFont: Typeface? = null,
+        val indexSize: Int = 0,
+        val phoneSize: Int = 0,
+        val transSize: Int = 0,
+        val sampleSize: Int = 0
+        ) {
 
     fun allText() : String{
         val all = StringBuilder()
-        all.append(Index!!.toString())
-        Trans?.let{
+        all.append(index!!.toString())
+        trans?.let{
             all.append("\n")
             all.append(it)
         }
-        Sample?.let{
+        sample?.let{
             all.append("\n")
             all.append(it)
         }
@@ -40,7 +43,7 @@ class ResultModel(val mode: Int, val dic: Int) {       //todo data class
         val items = ArrayList<String>()
         val disps = ArrayList<String>()
 
-        Trans?.let{
+        trans?.let{
             trans->
             // <→リンク> 英辞郎形式
             run {
@@ -79,16 +82,64 @@ class ResultModel(val mode: Int, val dic: Int) {       //todo data class
                     }
                 }
             }
+            // 過去形・過去分詞形　英辞郎形式
+            run {
+                val p = Pattern.compile("(《動》(.+)(の過去形|の過去分詞形))")
+                val m = p.matcher(trans)
+
+                while (m.find()) {
+                    disps.add(m.group(1)!!)
+                    items.add(m.group(2)!!)
+                }
+            }
+            // 【同】　英辞郎形式
+            run {
+                val p = Pattern.compile("(【([同|類])】([a-zA-Z; ]+))")
+                val m = p.matcher(trans)
+
+                while (m.find()) {
+                    val title = m.group(2)!!
+                    val synonymous = m.group(3)!!
+                    val splited = synonymous.split(";")
+                    splited.forEach{
+                        disps.add("【$title】$it")
+                        items.add(it)
+                    }
+                }
+            }
+            // 【変化】　英辞郎形式
+            run {
+                val p = Pattern.compile("(【変化】《動》([a-zA-Z| ]+))")
+                val m = p.matcher(trans)
+
+                while (m.find()) {
+                    val synonymous = m.group(2)!!
+                    val splited = synonymous.split("|")
+                    splited.forEach{
+                        disps.add("【変化】$it")
+                        items.add(it)
+                    }
+                }
+            }
+            // 〈英〉→　英辞郎形式
+            run {
+                val p = Pattern.compile("(〈英〉→(.+))")
+                val m = p.matcher(trans)
+
+                while (m.find()) {
+                    disps.add(m.group(1)!!)
+                    items.add(m.group(2)!!)
+                }
+            }
         }
         return disps.toTypedArray() to items.toTypedArray()
     }
 
-
-    companion object {
-        val WORD = 0
-        val MORE = 1
-        val NONE = 2
-        val NORESULT = 3
-        val FOOTER = 4
+    enum class Mode(val mode:Int) {
+        WORD(0),
+        MORE(1),
+        NONE(2),
+        NORESULT(3),
+        FOOTER(4)
     }
 }

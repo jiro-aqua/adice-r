@@ -219,28 +219,30 @@ class SearchRepository {
                 DISP_MODE_RESULT -> {
                     // 表示させる内容を生成
                     for (i in 0 until pr!!.count) {
-                        val data = ResultModel(ResultModel.WORD, dic)
-
                         val idx = pr.getDisp(i)
-                        data.Index = idx
-                        if (idx.isNullOrEmpty()) {
-                            data.Index = pr.getIndex(i)
+                        val index = if (idx.isNullOrEmpty()) {
+                            pr.getIndex(i)
+                        }else{
+                            idx
                         }
-
-                        data.Phone = pr.getPhone(i)
-                        data.Trans = pr.getTrans(i)
-                        data.Sample = pr.getSample(i)
-
                         val info = mDice.getDicInfo(dic)
-                        data.IndexSize = info.GetIndexSize()
-                        data.PhoneSize = info.GetPhoneticSize()
-                        data.TransSize = info.GetTransSize()
-                        data.SampleSize = info.GetSampleSize()
 
-                        data.IndexFont = null
-                        data.PhoneFont = phoneticFont
-                        data.TransFont = null
-                        data.SampleFont = null
+                        val data = ResultModel(mode=ResultModel.Mode.WORD, dic=dic,
+                                index = index,
+                                phone = pr.getPhone(i),
+                                trans = pr.getTrans(i),
+                                sample = pr.getSample(i),
+
+                                indexSize = info.GetIndexSize(),
+                                phoneSize = info.GetPhoneticSize(),
+                                transSize = info.GetTransSize(),
+                                sampleSize = info.GetSampleSize(),
+
+                                indexFont = null,
+                                phoneFont = phoneticFont,
+                                transFont = null,
+                                sampleFont = null
+                                )
 
                         if (pos == -1) {
                             result.add(data)
@@ -251,7 +253,7 @@ class SearchRepository {
 
                     // 結果がまだあるようならmoreボタンを表示
                     if (mDice.hasMoreResult(dic)) {
-                        val data = ResultModel(ResultModel.MORE, dic)
+                        val data = ResultModel(mode=ResultModel.Mode.MORE, dic=dic)
 
                         if (pos == -1) {
                             result.add(data)
@@ -265,10 +267,10 @@ class SearchRepository {
                     if (dicname.isNullOrEmpty()) {
                         dicname = mDice.getDicInfo(dic).GetFilename()
                     }
-                    val data = ResultModel(ResultModel.FOOTER, dic)
+                    val data = ResultModel(mode=ResultModel.Mode.FOOTER, dic=dic,
+                            index = String.format(mFooter, dicname!!),
+                            indexSize = 16)
 
-                    data.Index = String.format(mFooter, dicname!!)
-                    data.IndexSize = 16
                     if (pos == -1) {
                         result.add(data)
                     } else {
@@ -276,8 +278,8 @@ class SearchRepository {
                     }
                 }
                 DISP_MODE_NORESULT -> {
-                    val data = ResultModel(ResultModel.NONE, 0)
-                    data.IndexSize = 16
+                    val data = ResultModel(mode=ResultModel.Mode.NONE, dic=0,
+                            indexSize = 16)
                     result.add(data)
                 }
                 DISP_MODE_START -> {
@@ -286,13 +288,12 @@ class SearchRepository {
                     val version = "Ver. " + String.format("%s (%d)", versionName, versionCode)
                     val description = mDescription
 
-                    val data = ResultModel(ResultModel.NONE, 0)
                     @Suppress("DEPRECATION")
-                    data.Index = Html.fromHtml(mStartPage.replace("\$version$", version).replace("\$description$", description))
-                    data.IndexSize = 16
+                    val index = Html.fromHtml(mStartPage.replace("\$version$", version).replace("\$description$", description))
+                    val data = ResultModel(mode=ResultModel.Mode.NONE, dic=0,
+                            index = index,
+                            indexSize = 16)
                     result.add(data)
-                }
-                else -> {
                 }
             }
             Unit

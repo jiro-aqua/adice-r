@@ -119,11 +119,10 @@ class AdiceFragment : Fragment()
 
         if (PreferenceRepository().isVersionUp()) {
             findNavController().navigate(R.id.action_main_to_welcome_dialog)
-        } else {
-            val text = editSearchWord.text.toString()
-            if ( text.isEmpty() ){
-                viewModel.startPage()
-            }
+        }
+        val text = editSearchWord.text.toString()
+        if ( text.isEmpty() ){
+            viewModel.startPage()
             editSearchWord.requestFocus()
         }
 
@@ -167,34 +166,36 @@ class AdiceFragment : Fragment()
         override fun onResultClicked(view:View, position: Int) {
             val data = resultData[position]
             when (data.mode) {
-                ResultModel.MORE -> {
+                ResultModel.Mode.MORE -> {
                     viewModel.more(position)
                 }
-                ResultModel.WORD -> {
+                ResultModel.Mode.WORD -> {
                     val (disps,items) = data.links()
                     if (disps.size == 1) {
                         resultClickDialogViewModel.linkClicked.postValue(items[0])
                     } else if (disps.size > 1) {
-                        val title : String = data.Index!!.toString()
+                        val title : String = data.index!!.toString()
                         val action =
                                 AdiceFragmentDirections.actionMainToResultclickDialog(title, disps, items)
                         findNavController().navigate(action)
                     }
                 }
+                else->{}
             }
         }
 
         override fun onResultLongClicked(view:View, position: Int): Boolean {
             val data = resultData[position]
             when (data.mode) {
-                ResultModel.WORD -> {
+                ResultModel.Mode.WORD -> {
                     // selected dialog list item
                     val all = data.allText()
-                    val title : String = data.Index!!.toString()
+                    val title : String = data.index!!.toString()
                     val action =
                             AdiceFragmentDirections.actionMainToLongclickDialog(title, all)
                     findNavController().navigate(action)
                 }
+                else->{}
             }
             return false
         }
