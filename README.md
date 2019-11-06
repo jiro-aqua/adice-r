@@ -24,8 +24,7 @@ aDice supports below PDIC formats.
 ・Unicode(BOCU-1) Hyper-format ver6.00 (PDIC/Unicode 5.00 or later)
 
 ■Development Environment
-・Eclipse for Java
-・Android SDK (SDK version 29)
+・Android Studio 3.5.0 (SDK version 29)
 
 ■License
 
