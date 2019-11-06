@@ -14,9 +14,17 @@
         >
         <action
             android:id="@+id/action_main_to_about"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"
             app:destination="@id/aboutFragment" />
         <action
             android:id="@+id/action_main_to_preference_general"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"
             app:destination="@id/preferencesGeneralFragment" />
         <action
             android:id="@+id/action_main_to_welcome_dialog"
@@ -51,9 +59,17 @@
         >
         <action
             android:id="@+id/action_preference_general_to_preference_dictionary"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"
             app:destination="@id/preferencesDictionaryFragment" />
         <action
             android:id="@+id/action_preference_general_to_install"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"
             app:destination="@id/installFragment" />
 
         <argument
@@ -85,6 +101,10 @@
 
         <action
             android:id="@+id/action_welcome_dialog_to_preference_general"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"
             app:destination="@id/preferencesGeneralFragment" />
 
     </dialog>
