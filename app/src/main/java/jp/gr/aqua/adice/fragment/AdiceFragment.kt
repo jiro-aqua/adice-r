@@ -111,9 +111,6 @@ class AdiceFragment : Fragment()
         args.text.let{
             if (it.isNotEmpty()) {
                 editSearchWord.setText(it)
-                editSearchWord.setSelection(0, it.length)
-                // フォーカスを外す
-                dicView.requestFocus()
             }
         }
 
@@ -124,6 +121,9 @@ class AdiceFragment : Fragment()
         if ( text.isEmpty() ){
             viewModel.startPage()
             editSearchWord.requestFocus()
+        }else{
+            // フォーカスを外す
+            dicView.requestFocus()
         }
 
     }
