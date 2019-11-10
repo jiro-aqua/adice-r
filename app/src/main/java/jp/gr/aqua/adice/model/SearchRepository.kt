@@ -27,14 +27,6 @@ class SearchRepository {
 
     private val mSearchHistory: ArrayList<CharSequence> = ArrayList()
 
-    private var diceJob: Job? = null
-    private val diceContext: CoroutineContext
-        get() {
-            val job = Job()
-            diceJob = job
-            return Dispatchers.IO + job
-        }
-
     private lateinit var phoneticFont: Typeface
     private lateinit var mStartPage: String
     private lateinit var mFooter: String
@@ -58,14 +50,13 @@ class SearchRepository {
     }
 
     suspend fun search(text: String): List<ResultModel>? {
-        if (text.isEmpty()) return null
         while(!mInitialized) { delay(100) }
-        diceJob?.cancelAndJoin()
-        return withContext(diceContext) {
+        if (text.isEmpty()) return null
+        return synchronized(this){
             val converted = if (mNormalize) DiceFactory.convert(text) else text
             if (converted.isNotEmpty() && mLast != converted) {
-                val result = searchProc(converted, 10)
-                if ( result != null ) mLast = converted
+                val result = searchProc(converted)
+                mLast = converted
                 result
             } else {
                 null
@@ -75,9 +66,7 @@ class SearchRepository {
 
     suspend fun more(currentResult: List<ResultModel>, position: Int): List<ResultModel>? {
         while(!mInitialized) { delay(100) }
-
-        diceJob?.cancelAndJoin()
-        return withContext(diceContext) {
+        return synchronized(this){
             val result: ArrayList<ResultModel> = currentResult.toCollection(ArrayList())
             result.removeAt(position)
             val dic = result[position].dic
@@ -170,45 +159,29 @@ class SearchRepository {
         mDice.setIrreg(irreg)
     }
 
-    private suspend fun searchProc(text: String, timer: Int): List<ResultModel>? {
+    private fun searchProc(text: String): List<ResultModel> {
 
         val result = ArrayList<ResultModel>()
         // Log.i("search thread ", "sleeping...");
-        delay(timer.toLong())
         // Log.i("search thread ", "got up");
         val dicnum = mDice.dicNum
         for (dic in 0 until dicnum) {
-            if (!isActive)
-                return null
-
             if (!mDice.isEnable(dic)) {
                 continue
             }
-
-            if (!isActive)
-                return null
 
             mDice.search(dic, text)
 
             val pr = mDice.getResult(dic)
 
-            if (!isActive)
-                return null
             if (pr.count > 0) {
                 generateDisp(DISP_MODE_RESULT, dic, pr, result, -1)
                 generateDisp(DISP_MODE_FOOTER, dic, null, result, -1)
             }
-
-            if (!isActive)
-                return null
         }
-
         if (result.size == 0) {
             generateDisp(DISP_MODE_NORESULT, -1, null, result, -1)
         }
-        if (!isActive)
-            return null
-
         return result
     }
 
