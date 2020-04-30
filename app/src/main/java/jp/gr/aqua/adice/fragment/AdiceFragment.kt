@@ -57,7 +57,7 @@ class AdiceFragment : Fragment()
                 dicView.scrollToPosition(0)
             }
         })
-        setFragmentResultListener("linkClicked") { key, bundle ->
+        setFragmentResultListener("linkClicked") { _, bundle ->
             val link = bundle.getString("link")
             link?.let{
                 searchForward(link)

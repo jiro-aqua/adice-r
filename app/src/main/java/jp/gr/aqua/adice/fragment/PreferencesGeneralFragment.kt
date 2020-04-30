@@ -1,10 +1,15 @@
 package jp.gr.aqua.adice.fragment
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.invoke
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.CallSuper
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -29,7 +34,7 @@ class PreferencesGeneralFragment : PreferenceFragmentCompat() {
         // res/xml/preferences_general.xml ファイルに従って設定画面を構成
         setPreferencesFromResource(R.xml.preferences_general, rootKey)
 
-        val openDocument = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+        val openDocument = registerForActivityResult(OpenDocument()) {
             uri: Uri? ->
                 uri?.let{
                     preferencesGeneralViewModel.openDictionary(uri)
@@ -57,7 +62,7 @@ class PreferencesGeneralFragment : PreferenceFragmentCompat() {
 
     override fun onStart() {
         super.onStart()
-        setFragmentResultListener("downloadResult") { key, bundle ->
+        setFragmentResultListener("downloadResult") { _, bundle ->
             val url = bundle.getString("url")
             url?.let{
                 val uri = Uri.parse(url)
@@ -143,6 +148,24 @@ class PreferencesGeneralFragment : PreferenceFragmentCompat() {
 
                 // TODO: 辞書削除時のy/n確認
             }
+        }
+    }
+
+    private class OpenDocument : ActivityResultContract<Array<String>, Uri>() {
+
+        @CallSuper
+        override fun createIntent(context: Context, input: Array<String>): Intent {
+            return Intent(Intent.ACTION_OPEN_DOCUMENT)
+                    .setType("*/*")
+        }
+
+        override fun getSynchronousResult(context: Context,
+                                          input: Array<String>): ActivityResultContract.SynchronousResult<Uri>? {
+            return null
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+            return if (intent == null || resultCode != Activity.RESULT_OK) null else intent.data
         }
     }
 
