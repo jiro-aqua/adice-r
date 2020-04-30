@@ -8,8 +8,9 @@ import android.view.*
 import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +20,6 @@ import jp.gr.aqua.adice.model.PreferenceRepository
 import jp.gr.aqua.adice.model.ResultModel
 import jp.gr.aqua.adice.view.ResultView
 import jp.gr.aqua.adice.viewmodel.AdiceViewModel
-import jp.gr.aqua.adice.viewmodel.ResultClickDialogViewModel
 import kotlinx.android.synthetic.main.fragment_adice.*
 import kotlinx.coroutines.InternalCoroutinesApi
 import java.util.*
@@ -27,8 +27,7 @@ import java.util.*
 @InternalCoroutinesApi
 class AdiceFragment : Fragment()
 {
-    private val viewModel by lazy { ViewModelProviders.of(requireActivity()).get(AdiceViewModel::class.java) }
-    private val resultClickDialogViewModel by lazy { ViewModelProviders.of(requireActivity()).get(ResultClickDialogViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProvider(requireActivity()).get(AdiceViewModel::class.java) }
     private val resultData = ArrayList<ResultModel>()
     private val args by navArgs<AdiceFragmentArgs>()
 
@@ -58,16 +57,12 @@ class AdiceFragment : Fragment()
                 dicView.scrollToPosition(0)
             }
         })
-        resultClickDialogViewModel.linkClicked.observe(this, Observer{
-            link->
+        setFragmentResultListener("linkClicked") { key, bundle ->
+            val link = bundle.getString("link")
             link?.let{
-                resultClickDialogViewModel.linkClicked.setValue(null)
-                if ( editSearchWord.text.toString() != it ) {
-                    viewModel.pushHistory()
-                    editSearchWord.setText(it)
-                }
+                searchForward(link)
             }
-        })
+        }
 
         dicView.apply {
             layoutManager = LinearLayoutManager(requireActivity())
@@ -162,6 +157,14 @@ class AdiceFragment : Fragment()
         return super.onOptionsItemSelected(item)
     }
 
+    private fun searchForward(word: String)
+    {
+        if ( editSearchWord.text.toString() != word ) {
+            viewModel.pushHistory()
+            editSearchWord.setText(word)
+        }
+    }
+
     private val resultClickListener = object : ResultView.ResultClickListener {
         override fun onResultClicked(view:View, position: Int) {
             val data = resultData[position]
@@ -172,7 +175,7 @@ class AdiceFragment : Fragment()
                 ResultModel.Mode.WORD -> {
                     val (disps,items) = data.links()
                     if (disps.size == 1) {
-                        resultClickDialogViewModel.linkClicked.postValue(items[0])
+                        searchForward(items[0])
                     } else if (disps.size > 1) {
                         val title : String = data.index!!.toString()
                         val action =

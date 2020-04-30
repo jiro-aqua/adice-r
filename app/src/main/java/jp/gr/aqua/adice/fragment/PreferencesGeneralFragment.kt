@@ -1,12 +1,13 @@
 package jp.gr.aqua.adice.fragment
 
-import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.invoke
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.preference.Preference
@@ -16,13 +17,11 @@ import jp.gr.aqua.adice.R
 import jp.gr.aqua.adice.model.ContextModel
 import jp.gr.aqua.adice.model.DictionaryRepository
 import jp.gr.aqua.adice.model.PreferenceRepository
-import jp.gr.aqua.adice.viewmodel.AboutViewModel
 import jp.gr.aqua.adice.viewmodel.PreferencesGeneralViewModel
 
 class PreferencesGeneralFragment : PreferenceFragmentCompat() {
 
-    private val aboutViewModel by lazy { ViewModelProviders.of(requireActivity()).get(AboutViewModel::class.java) }
-    private val preferencesGeneralViewModel by lazy { ViewModelProviders.of(requireActivity()).get(PreferencesGeneralViewModel::class.java) }
+    private val preferencesGeneralViewModel by lazy { ViewModelProvider(requireActivity()).get(PreferencesGeneralViewModel::class.java) }
     private val args by navArgs<PreferencesGeneralFragmentArgs>()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -30,12 +29,16 @@ class PreferencesGeneralFragment : PreferenceFragmentCompat() {
         // res/xml/preferences_general.xml ファイルに従って設定画面を構成
         setPreferencesFromResource(R.xml.preferences_general, rootKey)
 
+        val openDocument = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+            uri: Uri? ->
+                uri?.let{
+                    preferencesGeneralViewModel.openDictionary(uri)
+                }
+        }
+
         val adddic = findPreference<Preference>(PreferenceRepository.KEY_ADD_DICTIONARY)
         adddic?.setOnPreferenceClickListener {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.type = "*/*"
-            startActivityForResult(intent, REQUEST_CODE_OPEN_DOCUMENT)
+            openDocument(arrayOf("*/*"))
             true
         }
 
@@ -54,10 +57,9 @@ class PreferencesGeneralFragment : PreferenceFragmentCompat() {
 
     override fun onStart() {
         super.onStart()
-        aboutViewModel.downloadResult.observe(this, Observer {
-            url->
+        setFragmentResultListener("downloadResult") { key, bundle ->
+            val url = bundle.getString("url")
             url?.let{
-                aboutViewModel.downloadResult.value = null
                 val uri = Uri.parse(url)
                 if ( uri.scheme == "adicer" && uri.host == "install" ){
                     val site = uri.getQueryParameter("site")
@@ -68,7 +70,7 @@ class PreferencesGeneralFragment : PreferenceFragmentCompat() {
                     }
                 }
             }
-        })
+        }
         preferencesGeneralViewModel.downloadInProgress.observe(this, Observer {
             it?.let{
                 showDownloadProgress(it)
@@ -108,15 +110,6 @@ class PreferencesGeneralFragment : PreferenceFragmentCompat() {
         findPreference<Preference>(PreferenceRepository.KEY_ADD_DICTIONARY)?.isVisible = !visible
         findPreference<Preference>(PreferenceRepository.KEY_DOWNLOAD_DICTIONARY)?.isVisible = !visible
         findPreference<Preference>(PreferenceRepository.KEY_PROGRESS)?.isVisible = visible
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_OPEN_DOCUMENT && resultCode == Activity.RESULT_OK) {
-            data?.data?.let{
-                preferencesGeneralViewModel.openDictionary(it)
-            }
-        }
     }
 
     private fun createDictionaryPreference()

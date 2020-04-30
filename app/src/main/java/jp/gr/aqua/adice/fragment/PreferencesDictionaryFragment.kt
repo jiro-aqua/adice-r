@@ -3,7 +3,7 @@ package jp.gr.aqua.adice.fragment
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.preference.Preference
@@ -20,7 +20,7 @@ import kotlin.properties.Delegates
 
 class PreferencesDictionaryFragment : PreferenceFragmentCompat()
 {
-    private val viewModel by lazy { ViewModelProviders.of(requireActivity()).get(PreferencesDictionaryViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProvider(requireActivity()).get(PreferencesDictionaryViewModel::class.java) }
 
     private var filename by Delegates.notNull<String>()
     private var index by Delegates.notNull<Int>()

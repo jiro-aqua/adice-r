@@ -6,20 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import jp.gr.aqua.adice.BuildConfig
 import jp.gr.aqua.adice.R
-import jp.gr.aqua.adice.viewmodel.AboutViewModel
 import kotlinx.android.synthetic.main.fragment_about.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 open class AboutFragment : Fragment(){
-
-    private val viewModel by lazy { ViewModelProviders.of(requireActivity()).get(AboutViewModel::class.java) }
 
     protected open fun pageUrl() = ABOUT_PAGE
 
@@ -63,7 +61,7 @@ open class AboutFragment : Fragment(){
         fun throwIntentByUrl(url: String?, @Suppress("UNUSED_PARAMETER") requestcode: Int) {
             if (url != null && url.isNotEmpty()) {
                 GlobalScope.launch(Dispatchers.Main){
-                    viewModel.notify(url)
+                    setFragmentResult("downloadResult", bundleOf("url" to url))
                     // 前の画面に
                     findNavController().popBackStack()
                 }

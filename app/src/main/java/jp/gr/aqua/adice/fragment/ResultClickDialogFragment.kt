@@ -3,16 +3,15 @@ package jp.gr.aqua.adice.fragment
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.navArgs
 import jp.gr.aqua.adice.R
-import jp.gr.aqua.adice.viewmodel.ResultClickDialogViewModel
 
 class ResultClickDialogFragment : DialogFragment()
 {
     private val args by navArgs<ResultClickDialogFragmentArgs>()
-    private val resultClickDialogViewModel by lazy { ViewModelProviders.of(requireActivity()).get(ResultClickDialogViewModel::class.java) }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val title = args.title
@@ -24,7 +23,7 @@ class ResultClickDialogFragment : DialogFragment()
                 .setTitle(title)
                 .setItems(disps){ _, which ->
                     // selected dialog list item
-                    resultClickDialogViewModel.linkClicked.postValue(items[which])
+                    setFragmentResult("linkClicked", bundleOf("link" to items[which]))
                 }
                 .create()
     }
