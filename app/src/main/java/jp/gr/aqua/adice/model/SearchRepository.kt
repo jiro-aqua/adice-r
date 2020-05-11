@@ -252,7 +252,7 @@ class SearchRepository {
                     }
                 }
                 DISP_MODE_NORESULT -> {
-                    val data = ResultModel(mode=ResultModel.Mode.NONE, dic=0,
+                    val data = ResultModel(mode=ResultModel.Mode.NORESULT, dic=0,
                             indexSize = 16)
                     result.add(data)
                 }
