@@ -32,6 +32,7 @@ class SearchRepository {
     private lateinit var mFooter: String
     private lateinit var mDescription: String
     private lateinit var cacheDir: File
+    private var transTextSize: Int = 0
 
     fun initialize() {
         loadResources()
@@ -139,9 +140,9 @@ class SearchRepository {
         dicinfo.SetSearchMax(settings.resultNum)
 
         dicinfo.SetIndexSize(20)
-        dicinfo.SetPhoneticSize(16)
-        dicinfo.SetTransSize(16)
-        dicinfo.SetSampleSize(16)
+        dicinfo.SetPhoneticSize(20)
+        dicinfo.SetTransSize(20)
+        dicinfo.SetSampleSize(20)
     }
 
     // 英語向けIRREG読込
@@ -203,12 +204,12 @@ class SearchRepository {
                         val data = ResultModel(mode=ResultModel.Mode.WORD, dic=dic,
                                 index = index,
                                 phone = pr.getPhone(i),
-                                trans = pr.getTrans(i),
+                                trans = pr.getTrans(i)?.replace(Regex(",《"),"\n《"),     // 英辞郎144.8用パッチ("treat")
                                 sample = pr.getSample(i),
 
                                 indexSize = info.GetIndexSize(),
                                 phoneSize = info.GetPhoneticSize(),
-                                transSize = info.GetTransSize(),
+                                transSize = transTextSize,
                                 sampleSize = info.GetSampleSize(),
 
                                 indexFont = null,
@@ -278,6 +279,7 @@ class SearchRepository {
         mDescription = ContextModel.resources.getString(R.string.description)
         mStartPage = ContextModel.assets.open("start.html").bufferedReader(charset = Charsets.UTF_8).readText()
         phoneticFont = Typeface.createFromAsset(ContextModel.assets, "DoulosSILR.ttf")
+        transTextSize = ContextModel.resources.getInteger(R.integer.transTextSize)
         cacheDir = ContextModel.cacheDir
     }
 
