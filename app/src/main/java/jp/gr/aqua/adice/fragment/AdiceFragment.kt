@@ -56,6 +56,7 @@ class AdiceFragment : Fragment()
             if ( resetScroll ){
                 dicView.scrollToPosition(0)
             }
+            dicView.requestFocus()
         })
         setFragmentResultListener("linkClicked") { _, bundle ->
             val link = bundle.getString("link")
@@ -116,11 +117,7 @@ class AdiceFragment : Fragment()
         if ( text.isEmpty() ){
             viewModel.startPage()
             editSearchWord.requestFocus()
-        }else{
-            // フォーカスを外す
-            dicView.requestFocus()
         }
-
     }
 
     override fun onPause() {
@@ -180,7 +177,9 @@ class AdiceFragment : Fragment()
                         val title : String = data.index!!.toString()
                         val action =
                                 AdiceFragmentDirections.actionMainToResultclickDialog(title, disps, items)
-                        findNavController().navigate(action)
+                        try {
+                            findNavController().navigate(action)
+                        }catch (e:Exception){}
                     }
                 }
                 else->{}
