@@ -21,7 +21,7 @@ import jp.gr.aqua.adice.model.ResultModel
 import jp.gr.aqua.adice.view.ResultView
 import jp.gr.aqua.adice.viewmodel.AdiceViewModel
 import kotlinx.android.synthetic.main.fragment_adice.*
-import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.*
 import java.util.*
 
 @InternalCoroutinesApi
@@ -56,7 +56,12 @@ class AdiceFragment : Fragment()
             if ( resetScroll ){
                 dicView.scrollToPosition(0)
             }
-            dicView.requestFocus()
+            GlobalScope.launch {
+                delay(100)
+                withContext(Dispatchers.Main){
+                    dicView.requestFocus()
+                }
+            }
         })
         setFragmentResultListener("linkClicked") { _, bundle ->
             val link = bundle.getString("link")
