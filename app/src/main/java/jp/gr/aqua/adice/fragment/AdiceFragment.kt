@@ -56,10 +56,12 @@ class AdiceFragment : Fragment()
             if ( resetScroll ){
                 dicView.scrollToPosition(0)
             }
-            GlobalScope.launch {
-                delay(100)
-                withContext(Dispatchers.Main){
-                    dicView.requestFocus()
+            if ( results.isNotEmpty() && results[0].mode != ResultModel.Mode.NONE ) {
+                GlobalScope.launch {
+                    delay(30)
+                    withContext(Dispatchers.Main) {
+                        dicView.requestFocus()
+                    }
                 }
             }
         })
