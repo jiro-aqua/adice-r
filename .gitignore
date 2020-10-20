@@ -61,3 +61,7 @@ fastlane/readme.md
 gradle.properties
 
 .cxx/
+
+app/release/
+
+
