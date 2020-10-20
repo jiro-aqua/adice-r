@@ -8,6 +8,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import jp.gr.aqua.adice.model.ContextModel
 import kotlinx.coroutines.InternalCoroutinesApi
+import java.net.URLDecoder
 
 @InternalCoroutinesApi
 class MainActivity : AppCompatActivity() {
@@ -38,6 +39,8 @@ class MainActivity : AppCompatActivity() {
             when( intent.action ){
                 Intent.ACTION_SEND->intent.extras?.getString(Intent.EXTRA_TEXT)
                 Intent.ACTION_SEARCH->intent.extras?.getString(SearchManager.QUERY)
+                "org.chromium.arc.intent.action.VIEW",
+                Intent.ACTION_VIEW->URLDecoder.decode(intent.data.toString().substring(6),"utf-8")
                 else->null
             }?.let{
                 val pos = it.indexOf("\n")

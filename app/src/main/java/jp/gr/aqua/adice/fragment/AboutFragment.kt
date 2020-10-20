@@ -12,17 +12,21 @@ import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import jp.gr.aqua.adice.BuildConfig
 import jp.gr.aqua.adice.R
-import kotlinx.android.synthetic.main.fragment_about.*
+import jp.gr.aqua.adice.databinding.FragmentAboutBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 open class AboutFragment : Fragment(){
 
+    private var _binding: FragmentAboutBinding? = null
+    private val binding get() = _binding!!
+
     protected open fun pageUrl() = ABOUT_PAGE
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_about, container , false)
+        _binding = FragmentAboutBinding.inflate(inflater)
+        return binding.root
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -31,7 +35,7 @@ open class AboutFragment : Fragment(){
 
         val url = pageUrl()
 
-        webview.apply{
+        binding.webview.apply{
             loadUrl(url)
             addJavascriptInterface(JsCallbackObj(), "jscallback")
             settings.javaScriptEnabled = true
@@ -67,6 +71,11 @@ open class AboutFragment : Fragment(){
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

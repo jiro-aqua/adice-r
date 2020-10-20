@@ -16,7 +16,13 @@ class AdiceViewModel(application: Application): AndroidViewModel(application)
     private val searchRepository = SearchRepository()
 
     val searchWord : MutableLiveData<String> = MutableLiveData()
-    val resultData : MutableLiveData<Pair<List<ResultModel>, Boolean>> = MutableLiveData()
+    val resultData : MutableLiveData<ResultData> = MutableLiveData()
+
+    data class ResultData(
+            val result: List<ResultModel>,
+            val resetScroll : Boolean,
+            val loseFocus : Boolean
+    )
 
     init
     {
@@ -28,24 +34,24 @@ class AdiceViewModel(application: Application): AndroidViewModel(application)
     fun startPage(){
         viewModelScope.launch(Dispatchers.IO) {
             searchRepository.startPage().let {
-                resultData.postValue(it to true)
+                resultData.postValue(ResultData(it, true, false))
             }
         }
     }
 
-    fun search(text:String){
+    fun search(text:String, loseFocus : Boolean = false){
         viewModelScope.launch(Dispatchers.IO) {
             searchWord.postValue(text)
             searchRepository.search(text)?.let{
-                resultData.postValue(it to true)
+                resultData.postValue(ResultData(it, true, loseFocus))
             }
         }
     }
 
     fun more(position :Int){
         viewModelScope.launch(Dispatchers.IO) {
-            searchRepository.more(resultData.value?.first!!, position)?.let{
-                resultData.postValue(it to false)
+            searchRepository.more(resultData.value?.result!!, position)?.let{
+                resultData.postValue(ResultData(it, false, false))
             }
         }
     }

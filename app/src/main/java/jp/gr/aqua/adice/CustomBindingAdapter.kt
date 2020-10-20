@@ -16,7 +16,7 @@ object CustomBindingAdapter {
         } else {
             visibility = View.VISIBLE
             text = str
-            setTextSize(TypedValue.COMPLEX_UNIT_DIP, size.toFloat())
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, size.toFloat())
             typeface = tf
         }
     }

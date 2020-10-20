@@ -139,10 +139,10 @@ class SearchRepository {
         dicinfo.SetNotuse(!settings.use)
         dicinfo.SetSearchMax(settings.resultNum)
 
-        dicinfo.SetIndexSize(20)
-        dicinfo.SetPhoneticSize(20)
-        dicinfo.SetTransSize(20)
-        dicinfo.SetSampleSize(20)
+        dicinfo.SetIndexSize(18)
+        dicinfo.SetPhoneticSize(18)
+        dicinfo.SetTransSize(18)
+        dicinfo.SetSampleSize(18)
     }
 
     // 英語向けIRREG読込

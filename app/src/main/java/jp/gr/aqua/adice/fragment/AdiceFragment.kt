@@ -20,20 +20,22 @@ import jp.gr.aqua.adice.model.PreferenceRepository
 import jp.gr.aqua.adice.model.ResultModel
 import jp.gr.aqua.adice.view.ResultView
 import jp.gr.aqua.adice.viewmodel.AdiceViewModel
-import kotlinx.android.synthetic.main.fragment_adice.*
 import kotlinx.coroutines.*
 import java.util.*
 
 @InternalCoroutinesApi
 class AdiceFragment : Fragment()
 {
+    private var _binding: FragmentAdiceBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel by lazy { ViewModelProvider(requireActivity()).get(AdiceViewModel::class.java) }
     private val resultData = ArrayList<ResultModel>()
     private val args by navArgs<AdiceFragmentArgs>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        val binding = DataBindingUtil.inflate<FragmentAdiceBinding>( inflater, R.layout.fragment_adice, container, false)
+        _binding = DataBindingUtil.inflate<FragmentAdiceBinding>( inflater, R.layout.fragment_adice, container, false)!!
         binding.viewModel = viewModel
         return binding.root
     }
@@ -43,24 +45,32 @@ class AdiceFragment : Fragment()
 
         val dicAdapter = ResultView.ResultAdapter(resultData, resultClickListener)
 
+        args.text.let{
+            if (it.isNotEmpty()) {
+                binding.editSearchWord.setText(it)
+            }
+        }
+
         viewModel.searchWord.observe(this , Observer{
-            if ( editSearchWord.text.toString() != it ) {
-                editSearchWord.setText(it)
+            if ( binding.editSearchWord.text.toString() != it ) {
+                binding.editSearchWord.setText(it)
             }
         })
         viewModel.resultData.observe(this, Observer {
-            (results,resetScroll)->
+            results->
             resultData.clear()
-            results.mapTo(resultData){ it }
+            results.result.mapTo(resultData){ it }
             dicAdapter.notifyDataSetChanged()
-            if ( resetScroll ){
-                dicView.scrollToPosition(0)
+            if ( results.resetScroll ){
+                binding.dicView.scrollToPosition(0)
             }
-            if ( results.isNotEmpty() && results[0].mode != ResultModel.Mode.NONE ) {
-                GlobalScope.launch {
-                    delay(30)
-                    withContext(Dispatchers.Main) {
-                        dicView.requestFocus()
+            if (results.loseFocus) {
+                if (results.result.isNotEmpty() && results.result[0].mode != ResultModel.Mode.NONE) {
+                    GlobalScope.launch {
+                        delay(30)
+                        withContext(Dispatchers.Main) {
+                            binding.dicView.requestFocus()
+                        }
                     }
                 }
             }
@@ -72,12 +82,12 @@ class AdiceFragment : Fragment()
             }
         }
 
-        dicView.apply {
+        binding.dicView.apply {
             layoutManager = LinearLayoutManager(requireActivity())
             adapter = dicAdapter
         }
 
-        editSearchWord.apply{
+        binding.editSearchWord.apply{
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(editable: Editable) { }
                 override fun beforeTextChanged(charsequence: CharSequence, i: Int, j: Int, k: Int) { }
@@ -87,17 +97,17 @@ class AdiceFragment : Fragment()
             })
             setOnKeyListener { _, keyCode, event ->
                 if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                    val text = editSearchWord.text.toString()
+                    val text = binding.editSearchWord.text.toString()
                     viewModel.search(text)
                 }
                 false
             }
         }
 
-        buttonClear.setOnClickListener {
+        binding.buttonClear.setOnClickListener {
             viewModel.pushHistory()
-            editSearchWord.setText("")
-            editSearchWord.requestFocus()
+            binding.editSearchWord.setText("")
+            binding.editSearchWord.requestFocus()
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this, object:OnBackPressedCallback(true){
@@ -106,24 +116,18 @@ class AdiceFragment : Fragment()
                 var cs : CharSequence?
                 do{
                     cs = viewModel.popHistory()
-                }while( cs != null && editSearchWord.text.toString() == cs.toString() )
-                cs?.let { editSearchWord.setText(it) } ?: finish()
+                }while( cs != null && binding.editSearchWord.text.toString() == cs.toString() )
+                cs?.let { binding.editSearchWord.setText(it) } ?: finish()
             }
         })
-
-        args.text.let{
-            if (it.isNotEmpty()) {
-                editSearchWord.setText(it)
-            }
-        }
 
         if (PreferenceRepository().isVersionUp()) {
             findNavController().navigate(R.id.action_main_to_welcome_dialog)
         }
-        val text = editSearchWord.text.toString()
+        val text = binding.editSearchWord.text.toString()
         if ( text.isEmpty() ){
             viewModel.startPage()
-            editSearchWord.requestFocus()
+            binding.editSearchWord.requestFocus()
         }
     }
 
@@ -135,8 +139,8 @@ class AdiceFragment : Fragment()
     override fun onResume() {
         super.onResume()
         viewModel.onResume()
-        val text = editSearchWord.text.toString()
-        viewModel.search(text)
+        val text = binding.editSearchWord.text.toString()
+        viewModel.search(text,loseFocus = true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -163,9 +167,9 @@ class AdiceFragment : Fragment()
 
     private fun searchForward(word: String)
     {
-        if ( editSearchWord.text.toString() != word ) {
+        if ( binding.editSearchWord.text.toString() != word ) {
             viewModel.pushHistory()
-            editSearchWord.setText(word)
+            binding.editSearchWord.setText(word)
         }
     }
 
@@ -208,6 +212,11 @@ class AdiceFragment : Fragment()
             }
             return false
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun finish()

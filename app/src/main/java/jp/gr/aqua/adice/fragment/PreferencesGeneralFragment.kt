@@ -6,9 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.invoke
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.CallSuper
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
@@ -43,7 +41,7 @@ class PreferencesGeneralFragment : PreferenceFragmentCompat() {
 
         val adddic = findPreference<Preference>(PreferenceRepository.KEY_ADD_DICTIONARY)
         adddic?.setOnPreferenceClickListener {
-            openDocument(arrayOf("*/*"))
+            openDocument.launch(arrayOf("*/*"))
             true
         }
 
