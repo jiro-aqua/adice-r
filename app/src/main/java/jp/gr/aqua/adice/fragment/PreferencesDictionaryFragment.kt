@@ -20,7 +20,7 @@ import kotlin.properties.Delegates
 
 class PreferencesDictionaryFragment : PreferenceFragmentCompat()
 {
-    private val viewModel by lazy { ViewModelProvider(requireActivity()).get(PreferencesDictionaryViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProvider(requireActivity())[PreferencesDictionaryViewModel::class.java] }
 
     private var filename by Delegates.notNull<String>()
     private var index by Delegates.notNull<Int>()

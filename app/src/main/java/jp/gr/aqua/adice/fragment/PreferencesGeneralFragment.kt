@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.CallSuper
 import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -24,7 +23,7 @@ import jp.gr.aqua.adice.viewmodel.PreferencesGeneralViewModel
 
 class PreferencesGeneralFragment : PreferenceFragmentCompat() {
 
-    private val preferencesGeneralViewModel by lazy { ViewModelProvider(requireActivity()).get(PreferencesGeneralViewModel::class.java) }
+    private val preferencesGeneralViewModel by lazy { ViewModelProvider(requireActivity())[PreferencesGeneralViewModel::class.java] }
     private val args by navArgs<PreferencesGeneralFragmentArgs>()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -74,12 +73,12 @@ class PreferencesGeneralFragment : PreferenceFragmentCompat() {
                 }
             }
         }
-        preferencesGeneralViewModel.downloadInProgress.observe(this, Observer {
+        preferencesGeneralViewModel.downloadInProgress.observe(this, {
             it?.let{
                 showDownloadProgress(it)
             }
         })
-        preferencesGeneralViewModel.completed.observe(this, Observer {
+        preferencesGeneralViewModel.completed.observe(this, {
             it?.let{
                 (result,dicname)->
                 preferencesGeneralViewModel.completed.value = null
@@ -158,7 +157,7 @@ class PreferencesGeneralFragment : PreferenceFragmentCompat() {
         }
 
         override fun getSynchronousResult(context: Context,
-                                          input: Array<String>): ActivityResultContract.SynchronousResult<Uri>? {
+                                          input: Array<String>): SynchronousResult<Uri>? {
             return null
         }
 
@@ -167,7 +166,4 @@ class PreferencesGeneralFragment : PreferenceFragmentCompat() {
         }
     }
 
-    companion object{
-        private const val REQUEST_CODE_OPEN_DOCUMENT = 0x1238
-   }
 }

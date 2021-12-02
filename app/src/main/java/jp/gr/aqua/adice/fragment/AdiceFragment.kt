@@ -9,8 +9,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,13 +29,13 @@ class AdiceFragment : Fragment()
     private var _binding: FragmentAdiceBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by lazy { ViewModelProvider(requireActivity()).get(AdiceViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProvider(requireActivity())[AdiceViewModel::class.java] }
     private val resultData = ArrayList<ResultModel>()
     private val args by navArgs<AdiceFragmentArgs>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
-        _binding = DataBindingUtil.inflate<FragmentAdiceBinding>( inflater, R.layout.fragment_adice, container, false)!!
+        _binding = DataBindingUtil.inflate( inflater, R.layout.fragment_adice, container, false)!!
         binding.viewModel = viewModel
         return binding.root
     }
@@ -51,12 +51,12 @@ class AdiceFragment : Fragment()
             }
         }
 
-        viewModel.searchWord.observe(this , Observer{
+        viewModel.searchWord.observe(this , {
             if ( binding.editSearchWord.text.toString() != it ) {
                 binding.editSearchWord.setText(it)
             }
         })
-        viewModel.resultData.observe(this, Observer {
+        viewModel.resultData.observe(this, {
             results->
             resultData.clear()
             results.result.mapTo(resultData){ it }
@@ -66,7 +66,7 @@ class AdiceFragment : Fragment()
             }
             if (results.loseFocus) {
                 if (results.result.isNotEmpty() && results.result[0].mode != ResultModel.Mode.NONE) {
-                    GlobalScope.launch {
+                    lifecycleScope.launch {
                         delay(30)
                         withContext(Dispatchers.Main) {
                             binding.dicView.requestFocus()
